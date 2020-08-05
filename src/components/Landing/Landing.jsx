@@ -2,7 +2,7 @@ import React, { useEffect} from 'react';
 import { connect } from 'react-redux';
 import { getCourses } from '../../data/actions/courses';
 import { getArticles } from '../../data/actions/articles';
-import Coursecard from '../courses/CourseCard'
+import Coursecard from '../Courses/CourseCard'
 import ArticleCard from '../Articles/ArticleCard'
 import Carousel from "./Carousel";
 import "react-multi-carousel/lib/styles.css";
