@@ -1,0 +1,12 @@
+.about {
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 150px;
+    text-align: center;
+}
+
+.about-content {
+    width: 70%;
+    margin: 0 auto;
+    padding: 3em;
+}

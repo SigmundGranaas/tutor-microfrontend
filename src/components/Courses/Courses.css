@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito&display=swap");
+@import "~font-awesome/scss/font-awesome";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
+
+.CourseMain{
+  width: 100%;
+  background-image: url(../Landing/assets/Isfjorden.jpg);
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.courses-header {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  width: 70%;
+  height: 100px;
+  text-align: left;
+  padding-left: 100px;
+}
+.searchField{
+  margin: 0 auto 10vh auto;
+  max-width: 30vw;
+  min-width: 350px;
+  padding-top: 30px; 
+}
+.CoursesContent{
+  margin: 0 auto;
+  max-width:100%;
+  background-color: white;
+}
+.Courses {
+    margin: 0 auto;
+    max-width: 70%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-auto-rows: auto;
+    gap: 10px; 
+}
+
+.Courses * {
+    box-sizing: border-box;  
+}
+
+.paginateDADDY{
+    text-align: center;
+    margin: 0 auto;
+    width: 1000px;
+}
+
+.pagespagination{
+    margin: 0 5px;
+    display: inline; 
+    border-radius: 5px;
+    padding: 3px 10px;
+}
+
+.pagination-container{
+  display: inline-block; 
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.pagination-next{
+  display: inline;
+  padding: 3px 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+.pagination-previous{
+  display: inline;
+  padding: 10px;
+  border-radius: 5px;
+  padding: 3px 10px;
+  border: none;
+  outline: none;
+}
+
+.pagespagination:hover, .pagination-next:hover, .pagination-previous:hover{
+  padding: 3px 10px;
+  background-color: rgba(25, 65, 144,1);
+  color: white;
+  border: none;
+}
+
+.pagination-active{
+  border: none;
+  outline: none;
+}
+
+.pagination-active-page *{
+  background-color: rgba(25, 65, 144,1);
+  color: white;
+}

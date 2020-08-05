@@ -1,0 +1,53 @@
+.user-story{
+    font-size: 16px;
+    border-radius: 10px;
+    height: 120px;
+    width: 500px;
+    display: grid;
+    font-weight: bold;
+    grid-column-gap: 30px;
+    grid-template-columns: auto auto auto;
+    margin: 20px 40px 20px 0;
+  }
+  .user-story-image{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    overflow: hidden;
+    width: 120px;
+    height: 120px;
+  }
+  .user-story-content{
+      text-align: left;
+      margin:  10px 0 0 40px;
+  }
+  blockquote {
+    display: block;
+    border-width: 2px 0;
+    border-style: solid;
+    border-color: #eee;
+    padding: 1.5em 0 0.5em;
+    position: relative;
+  }
+  blockquote:before {
+    content: '\201C';
+    position: absolute;
+    top: 0em;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    width: 3rem;
+    height: 2rem;
+    font: 6em/1.08em 'PT Sans', sans-serif;
+    color: #666;
+    text-align: center;
+  }
+  blockquote:after {
+    content: "\2013 \2003" attr(cite);
+    display: block;
+    text-align: right;
+    font-size: 0.875em;
+    color: #e74c3c;
+  }
+  
+  
+  

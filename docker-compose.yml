@@ -1,0 +1,35 @@
+version: '3.3'
+
+services:
+  wordpress-db:
+    # Using mariadb because of permission issues when mounting data volume to host
+    image: mariadb
+    volumes:
+      - ./wp_data:/var/lib/mysql
+    restart: unless-stopped
+    env_file:
+      - .env.wordpress
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    expose:
+      - 3306
+
+  wordpress:
+    links:
+      - wordpress-db
+    image: wordpress:latest
+    ports:
+      - '8000:80'
+    restart: unless-stopped
+    volumes:
+      - ./wordpress:/var/www/html
+    env_file:
+      - ./.env.wordpress
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress

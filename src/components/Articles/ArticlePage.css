@@ -1,0 +1,102 @@
+.articlePageDiv{
+    background-color: whitesmoke;
+}
+.articleContent{
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 50px 100px 100px 100px;
+}
+.articleContent h1{
+    text-align: center;
+    margin-bottom: 80px;
+    font-size: 50px;
+}
+.articleContent h2{
+    text-align: left;
+    margin-bottom: 50px;
+}
+.articleContent h3{
+    text-align: left;
+    margin-bottom: 50px;
+}
+.articleContent h4{
+    text-align: left;
+    margin-bottom: 50px;
+}
+.articleContent h5{
+    text-align: left;
+    margin-bottom: 50px;
+}
+.articleContent h6{
+    text-align: left;
+    margin-bottom: 50px;
+}
+
+.articleContent img{
+    text-align: center;
+    width: 600px;
+    margin: 20px 100px;
+}
+.articleContent figure{
+    text-align: center;
+    width: 600px;
+    margin: 40px auto;
+}
+
+.articleContent p{
+    margin: 0 auto;
+    text-align: left;
+}
+.articleContent blockquote {
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: "\201C""\201D""\2018""\2019";
+  }
+  .articleContent blockquote:before {
+    color: #ccc;
+    content: open-quote;
+    font-size: 4em;
+    line-height: 0.1em;
+    margin-right: 0.25em;
+    vertical-align: -0.4em;
+  }
+  .articleContent blockquote p {
+    display: inline;
+  }
+  .articleContent ul {
+    text-align: left;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+   
+  .articleContent li {
+    text-align: left;
+    font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
+    border-bottom: 1px solid #ccc;
+  }
+   
+  .articleContent li:last-child {
+    border: none;
+  }
+   
+  .articleContent li a {
+    text-decoration: none;
+    color: #000;
+    display: block;
+    width: 200px;
+   
+    -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+    -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+    -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+    -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+    transition: font-size 0.3s ease, background-color 0.3s ease;
+  }
+   
+  .articleContent li a:hover {
+    font-size: 30px;
+    background: #f6f6f6;
+  }

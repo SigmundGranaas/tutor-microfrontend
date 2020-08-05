@@ -1,117 +1,212 @@
-[![Build Status](https://api.travis-ci.org/edx/frontend-platform.svg?branch=master)](https://travis-ci.org/edx/frontend-platform)
-[![Codecov](https://img.shields.io/codecov/c/github/edx/frontend-platform)](https://codecov.io/gh/edx/frontend-platform)
-[![NPM Version](https://img.shields.io/npm/v/@edx/frontend-platform.svg)](https://www.npmjs.com/package/@edx/frontend-platform)
-[![npm_downloads](https://img.shields.io/npm/dt/@edx/frontend-platform.svg)](https://www.npmjs.com/package/@edx/frontend-platform)
-[![license](https://img.shields.io/npm/l/@edx/frontend-platform.svg)](https://github.com/edx/frontend-platform/blob/master/LICENSE)
-[![semantic release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+# edX-frontend-application
 
-# Overview
+<!-- Introduction -->
 
-frontend-platform is a modest application framework for Open edX micro-frontend applications and their supporting libraries. It provides a number of foundational services that all Open edX micro-frontends should have:
+# Table of Contents
 
-| Service                            | Module location                  |
-|------------------------------------|----------------------------------|
-| Analytics                          | @edx/frontend-platform/analytics |
-| Logging                            | @edx/frontend-platform/logging   |
-| Authenticated API client (auth)    | @edx/frontend-platform/auth      |
-| Internationalization (i18n)        | @edx/frontend-platform/i18n      |
-| Misc (init, config, pubSub, utils) | @edx/frontend-platform           |
+- [Getting Started](#getting-started)
+- [Deployment](#deployment)
+- [Developer's Guide](#developers-guide)
+  - [Tutor and Edx-platform Configuration](#tutor-and-edx-platform-configuration)
+  - [Edx Platform APIs](#edx-platform-apis)
+  - [Application Structure and Redux](#application-structure-and-redux)
+  - [Edx Frontend Platform](#edx-frontend-platform)
+  - [Edx Frontend Apps](#edx-frontend-apps)
+  - [Edx Frontend Components](#edx-frontend-components)
+  - [Wordpress API](#wordpress-rest-api)
+  - [SSO with Feide and LinkedIn](#sso)
+- [License](#license)
 
--------------------------------------------------------------------------
+## Getting Started
+This configuration applies to starting the project in devstack. 
 
-In addition, frontend-platform provides an extensible application initialization lifecycle to help manage the configuration of the above services, freeing application developers to focus on feature development.
+Clone Repo \
+`git clone https://github.com/NTNUbeta/edX-frontend-application.git`
 
-## Architecture
+Start Devstack \
+`cd devstack && make dev.up.lms`
 
-The four foundational services listed above (analytics, auth, i18n, and logging) are provided as imports to applications via frontend-platform's API layer.  The initialization sequence creates an instance of each service and exposes its methods as functional exports, creating a layer of abstraction between service implementations and their usage in application code.
+Start and Configure Wordpress \
+`cd edX-frontend-application && docker-compose up` \
+Goto http://localhost:8000/ and follow the instructions. Make sure to [enable pretty permalinks](https://wordpress.org/support/article/using-permalinks/) from the settings to make the API work as expected.
 
-Each type of service has a documented API contract which service implementations must fulfill. This allows different service implementations to be used as necessary without updates to consuming applications.
+Start Devserver \
+`cd edX-frontend-application && npm install` \
+`npm start`
 
-### Service architecture
+Visit http://localhost:8080/
 
-Internally, service implementations are strictly isolated from the rest of the platform.  They are classes that take their dependencies as arguments to their constructor.  This means, for instance, if analytics depends on logging, it takes a reference to an instance fulfilling the `LoggingService` interface as an option when it's instantiated.  It cannot import from the logging module directly.  Put another way, the default service implementations may be co-located with the service interfaces for convenience, but they can theoretically live in their own repository and it wouldn't require any refactoring.
+## Deployment
 
-Likewise, platform code should not make use of service methods that are not part of the documented interface for the same reasons.
+## Developer's Guide
 
-### Application Initialization
+This project has aimed to explore how to use various frontend applications and components developed by the edX team with the APIs that comes with the edx-platform. The edx-platform itself is a massive application and with the various frontend applications and limited documentation on how to use them it is easy to get lost. Because of this we have documented our experiences and implementations, however we refer to the official documentations as the source of truth:
 
-frontend-platform provides an `initialize()` function which bootstraps and configures an application.  The `initialize()` function uses a set of [sensible defaults](https://en.wikipedia.org/wiki/Convention_over_configuration) unless otherwise specified, bootstrapping the application with services reflecting Open edX's best practices around analytics, authentication, internationalization, and logging.
+- [edx-platform: https://docs.edx.org/](https://docs.edx.org/)
+- [tutor: https://docs.tutor.overhang.io/](https://docs.tutor.overhang.io/)
+- [edx/frontend-platform: https://edx.github.io/frontend-platform/](https://edx.github.io/frontend-platform/)
+- [wordpress/rest-api: https://developer.wordpress.org/rest-api/](https://developer.wordpress.org/rest-api/)
 
-The initialization process proceeds in a series of phases, giving the initializing application code opportunities to hook into the process and do custom setup as desired:
+### Tutor and Edx-platform Configuration
 
-- Before initialization
-- Pub/Sub initialized
-- Environment config document loaded
-- Logging service initialized
-- Authentication service initialized
-- Analytics service initialized
-- Internationalization service initialized
-- Application ready
 
-Most applications won't need to do anything special at all.
+#### Running the application in tutor
 
-### Service interfaces
 
-Each service (analytics, auth, i18n, logging) provided by frontend-platform has a API contract which all implementations of that service are guaranteed to fulfill.  Applications that use frontend-platform can use its configured services via a convenient set of exported functions.  An application that wants to use the service interfaces need only initialize them via the initialize() function, optionally providing custom service interfaces as desired (you probably won't need to).
+### Edx-platform APIs
+New in the juniper release of openEdx is the ontroduction of REST-API's which is the foundation of our frontend application. Each service for OpenEdx has it's own api you can connect to. Currently we only use Discovery's and the LMS' API. Using API's to retrieve information allows us to create a standalone application independent of our installation of the OpenEdx platform, which won't be affected by new updates to the platform. 
 
-![Service interface](service-interface.png)
+Many of the API endpoints have restricted user acccess, few of which are documented. Most basic endpoints have been added. Information about courses, users and enrollments are availible. For more complex actions and access to information, you have to chain together several API calls which can be inefficient. Using these API calls for complex analytics is not yet suitable, as the amount of information you receive is still limited. 
 
-### Service implementations
+#### LMS REST-API
+The LMS base REST-API is the richest API
 
-This repository contains default service implementations for convenience.  These implementations are co-located with their consuming service interfaces for ease of development, though the two should remain _strictly_ modular and separate.
+##### Courses
+As a part of the marketing site, we need a full list of all current courses in the catalouge.
 
-The included service implementations are:
+###### Course search
 
-- New Relic (logging)
-- Segment (analytics)
-- Axios/JWT (auth)
-- React Intl (i18n)
+##### course enrollment
 
-NOTE: As of this writing, i18n is _not_ configurable.  The `initialize()` function does not allow applications to supply an alternate i18n implementation; this is because the interface and implementation for i18n has not yet been separated and modularized.
+##### User
+ 
 
-# Testing Locally
+#### Discovery REST_API
 
-If you want to test changes to frontend-platform against a micro-frontend locally, you can checkout a micro-frontend (such as frontend-app-learning) as a sibling of frontend-platform and do the following:
 
-1. Build `frontend-platform` for production:
+##### Courses
 
+
+### Application Structure and Redux
+
+We've chosen to group files by type then feature, meaning all React Components are placed in /src/components and all redux actions and reducers are placed in /src/data, as opposed to grouping by feature where each feature would contain a set of components, reducers, static assets etc.
+
+We use a redux store as the primary source for containing application state. To get an idea of all the different states look at the `rootReducer` in /src/data/reducers/index.js. There are however some parts of the application's state that reside in other places such as `AppContext` (see edx-frontend-platform documentation below), and some components may have their own state defined that is not reachable from the redux store.
+
+The redux implementation is mostly straight forward. The redux store combines all the reducers and is created in /src/data/configureStore.js and it is passed to the application in /src/index.js. A component can access the store by using the `connect()` function, and can change the state by calling upon a specific `action` that in return triggers a `reducer` that will return the new state. Some actions (specifically those related to the Profile components) triggers several middlewares such as `sagas` and `services`. This is implementation uses more seperation of logic and is inherited by the [edx/frontend-app-profile](https://github.com/edx/frontend-app-profile).
+
+### Edx-frontend-platform
+
+Edx has developed a [library](https://github.com/edx/frontend-platform) to make integration of frontend applications with the openedx-platform APIs easier. This library comes with several services; react components, authentication, internalization, logging, analytics and misc. By inspecting for instance the react service's index.js we find all the components that we can use:
+
+![@edx/frontend-platform/react/index.js](/docs/readme/index_react.PNG)
+
+See the [official documentation](https://edx.github.io/frontend-platform/) for a complete list of all the services and their functions, and take a look at the comments in the [source code](https://github.com/edx/frontend-platform) for more information on how they work.
+
+#### Initialize
+
+The initalization function is run before the react application renders and will handle all the configuration of the various services. It will dispatch/emit events such as `APP_READY` and `APP_INIT_ERROR` depending on the success of the function. The default template used for this application subsribes to these events and will only render the react application if `APP_READY` is emitted (see /src/index.js). This is the reason that the react application will not be rendered if it can't connect with the LMS API for instance.
+
+#### React Components
+
+The most essential components from this library are AppContext, AppProvider and the AuthenticatedPageRoute.
+
+The AppProvider wraps the entire application and provides the AppContext to other components (see /src/index.js). By injecting AppContext into the useContext-hook for instance, you get access to the following two objects:
+
+![@edx/frontend-platform/react/AppContext](/docs/readme/appcontext.PNG)
+
+The authenticatedUser contains various user info such as username, and the config object bundles together environmental variables from .env files with whatever config you've added using 'mergeConfig' from 'frontend-platform/config'. When using AppContext in combination with the Auth-service, all of the login session logic towards the LMS is handled for you.
+
+The AuthenticatedPageRoute works just like a Route from 'react-router', but will redirect the user to the login page if not authenticated.
+
+#### Authentication
+
+By default, the auth service will send requests to the LMS every few seconds to refresh the JwT used to authenticate the session.
+
+<!-- TODO: Update this section once we've gotten login redirect to work -->
+
+In order to use the LMS login page, use `redirectToLogin()` and `redirectToLogout()` from this library. These functions will redirect to the LMS login/logout page with a redirect url back to this application appended as a parameter. Redirecting back to this application requires some configuration of the LMS:
+
+1. Set FEATURES('ENABLE_MICROFRONTEND_LOGIN') = true
+2. Add 'localhost:8080' to LOGIN_REDIRECT_WHITELIST
+
+Most API calls to the various openedx APIs requires basic authentication. Use `getAuthenticatedHttpClient()` to populate the request with basic authentication:
+
+![import getAuthenticatedHttpClient](/docs/readme/import_gethttpclient.PNG)
+![example of api call](/docs/readme/example_api_call.PNG)
+
+#### Internalization (i18n)
+
+<!-- TODO: Complete this section -->
+
+This service is about adopting the application to different languages. The most important functions are ...
+
+It works by storing all application messages in JSON formats and injecting them into the html document (as opposed to hard coding the messages) like this: `props.intl.formatMessage(messages['profile.viewMyRecords'])`. The `intl` class is passed to the component's props by exporting the component like this: `export default (injectIntl(ProfilePage));`
+
+We store the default messages in /src/data/messages seperated by feature. In the figure below, the message defined as `profile.viewMyRecords` has 3 properties, and the `defaultMessage` property is what will be rendered on the page when we're using the default language (English).
+
+![Example of profile messages](/docs/readme/messages_example.PNG)
+
+The translations are stored in /src/i18n/messages. Each language supported will have its own .json file with translations of the default messages. We provide these files to the application by passing it as an option to the `initialize()` function in /src/index.jsx.
+
+To change the language setting of the application ...
+
+Check out the [official documentation](https://github.com/edx/frontend-platform/blob/02433dfb791c86f494884760c1a3dbb50bc43f02/docs/how_tos/i18n.rst).
+
+#### Logging
+
+#### Analytics
+
+This service lets you easily send customized analytics data to a [Segment Data Platform](https://segment.com/). The `initialize()` function will automatically configure the analytics service, but you will need a Segment Project and paste the `SEGMENT_KEY` into your .env file for it to work. From the Segment Dashboard you can configure the platform to forward the data to analytics tools such as [Google Analytics]() and [Amplitude](). See the [Segment Getting Started documentation](https://segment.com/docs/getting-started/02-simple-install/).
+
+The figure below is taken from the Segment Dashboard and illustrates how Segment operates as a data source platform and forwards data to 'Destinations'.
+
+![Segment Connections](/docs/readme/segment_connections.PNG)
+
+To configure a destination such as Google Analytics you need to enable the feature and include the `Website Tracking ID` which you get from the Google Analytics Dashboard.
+
+![Google Analytics Settings](/docs/readme/segment_ga_settings.PNG)
+
+To send data simply use one of the 'sendEvent' functions from the analytics service. For instance, to track that whenever a user visits the '/article' page do:
+
+```javascript
+function Articles({ getArticles, articles: { articles, isLoadingArticles } }) {
+  useEffect(() => {
+    getArticles();
+    sendPageEvent('Articles');
+  }, []);
 ```
-cd frontend-platform
-npm install
-npm run build
-```
 
-2. Install the built distribution's dependencies:
+### Edx-frontend-apps
 
-```
-cd dist
-npm install
-```
+#### Frontend Template Application
 
-And then, in `frontend-app-learning`:
+We used [this template](https://github.com/edx/frontend-template-application/blob/master/package.json) as a base for our application, however we updated the dependencies in package.json to newer versions, and disabled the `husky script` in package.json.
 
-1. Update package.json to use the `frontend-platform/dist` directory for the `@edx/frontend-platform` dependency:
+#### Frontend App Profile
 
-```
-dependencies: {
-  ...
-  "@edx/frontend-platform": "file:../frontend-platform/dist",
-  ...
-}
-```
-2. Remove your `package-lock.json` file and `node_modules` directory:
+We integrated [frontent-app-profile](https://github.com/edx/frontend-app-profile) directly into our application. Since this is a standalone react application it is not possible to integrate it as if it were a component out of the box. Here are some articles discussing how to implement micro-frontends:
 
-```
-rm package-lock.json
-rm -r node_modules
-```
+- https://www.robinwieruch.de/react-micro-frontend
+- https://medium.com/better-programming/5-steps-to-turn-a-random-react-application-into-a-micro-frontend-946718c147e7
+- https://micro-frontends.org/
 
-3. Install dependencies again:
+One of the issues we see with implementing a micro-frontend structure is the need to modify webpack configurations. The application template we used as a base depends on [edx/frontend-build](https://github.com/edx/frontend-build#readme) for setup (see "fedx-scripts" in package.json). Because of the added overhead and complexity this adds we chose to simply copy the relevant components from [frontent-app-profile](https://github.com/edx/frontend-app-profile) and make the needed adjustments.
 
-```
-npm install
-```
+The advantage of this approach is that it is easier to make adjustments and add our own features, however it also means we need to maintain the code ourselves. If there are many micro-frontends we wish to include in our app, looking into a micro-frontend structure might be worth considering.
 
-This should cause the `dist` directory of your `frontend-platform` checkout to fulfill `frontend-app-learning`'s `@edx/frontend-platform` dependency.
+### Edx-frontend-components
 
-If you then `npm start` the micro-frontend, you should be running your local frontend-platform distribution.  Just remember that if you make any further changes to `frontend-platform`, you need to do this process again!
+#### Header and Footer
+
+We have integrated [edx/frontend-component-header](https://github.com/edx/frontend-component-header) and [edx/frontend-component-header](https://github.com/edx/frontend-component-header) in the app. While it is possible to simply install and import these components with npm, we wanted to make our own adjustments to the components. The default components don't support customization, so again we chose to fork/copy the source code.
+
+### Wordpress REST API
+
+The Wordpress REST API is great for simple content management and the wordpress docker image comes with a practical GUI. Once the wordpress container is running and configured you can get a list of all the endpoints available by sending a GET request to http://localhost:8000/wp-json/. They are also documented [here](https://developer.wordpress.org/rest-api/reference/).
+
+The application uses posts as the main form for siaply articles on the landing page and the article page. Articles on the landing page are differentiated from the regular articles with specific categories. ![Wordpress categories](/docs/readme/wordpress_categories.png) The articles page lists all posts from wordpress as articles. 
+
+#### Wordpress REST API search and categories
+
+The search functionality of the article page is powered by the wordpress rest api. Currently, all requests to the wordpress api uses the same function, with different parameters according to each use case. All calls to the api also chains together a another call, to get the featured image of all the posts. The application uses offset parameters for pagination results from the api. ![Wordpress search](/docs/readme/wordpress_api_search.png)
+
+The search component used is from [edx/paragon](https://edx.github.io/paragon/) a library of react components created for OpenEdx. It supports OnChange functionality which means it will search continously as you type, which is convenient, because the clear button currently does not work. 
+
+#### Wordpress Styling from raw HTML
+
+The content of all wordpress posts are retrieved as pure html code. Styling for this code is applied only inside the single article page. Currently we have manually configured the css to each applicable html tag. This solution is not final as we are considering using SCSS to import styling from the wordpress. ![Wordpress styling](/docs/readme/wordpress_styling.png)
+
+### SSO
+
+## License

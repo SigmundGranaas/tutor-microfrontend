@@ -1,6 +1,6 @@
 @import '~@edx/paragon/scss/edx/theme.scss';
 
-@import './example/index.scss';
-
-@import "~@edx/frontend-component-header/dist/index";
-@import "~@edx/frontend-component-footer/dist/footer";
+@import "./components/Layout/Header/index.scss";
+@import "./components/Layout/footer";
+@import "./components/Profile/profile.scss";
+@import "./components/Profile/dashboard/dashboard.scss";

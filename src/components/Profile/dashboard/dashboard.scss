@@ -1,0 +1,108 @@
+.dashboard {
+  text-align: center;
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 150px;
+
+  .dashboard-content {
+    display: grid;
+    grid-template-columns: 75% auto;
+    grid-template-rows: 600px auto;
+    grid-template-areas: 
+      "programs programs"
+      "courses summary";
+    padding: 30px 150px;
+    width: 100%;
+  }
+
+  .dashboard-programs {
+    grid-area: programs;
+    align-self: center;
+    width: auto;
+    width: 100%;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .dashboard-carousel-container {
+    position: relative;
+    height: 500px;
+    text-align: center;
+    margin: 0 auto;
+    overflow: hidden;
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+    padding: 1rem;
+  }
+
+  .dashboard-carousel-card-image {
+    max-width: 100%;
+    max-height: 350px;
+    margin: 0 auto;
+  }
+
+  .dashboard-carousel-card-caption {
+    color: black;
+  }
+
+  .carousel-caption {
+    position: static;
+  }
+
+  .carousel-indicators > li {
+    background-color: black;
+  }
+
+  .carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+  }
+   
+  .carousel-control-next-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+  }
+
+  .dashboard-courses {
+    position: relative;
+    grid-area: courses;
+    text-align: left;
+  }
+
+  .dashboard-courses-title {
+    margin-left: 5px;
+    border-bottom: 2px solid #00509E;
+    display: inline-block;
+  }
+
+  .dashboard-courses-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    text-align: center;
+  }
+
+  .dashboard-summary {
+    grid-area: summary;
+    text-align: left;
+    // max-width: 400px;
+  }
+
+  .dashboard-summary-content {
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    padding: 1em;
+    margin: 5px;
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+  }
+
+  @media (max-width: 1130px) { 
+    .dashboard-content {
+      grid-template-columns: 75% auto;
+      grid-template-rows: 600px auto;
+      grid-template-areas: 
+        "programs programs"
+        "summary summary"
+        "courses courses";
+      padding: 30px 150px;
+    }
+   }
+
+}
